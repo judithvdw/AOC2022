@@ -12,9 +12,7 @@ def overlap(assignment):
 
 
 with open("inputs/4.txt") as f:
-    m = re.compile("(\d+)-(\d+),(\d+)-(\d+)")
-    assignments = [list(map(int, m.match(i).groups())) for i in f.readlines()]
+    assignments = [list(map(int, re.findall('\d+', i))) for i in f.readlines()]
 
     print(f"Part 1: {sum(map(contains, assignments))}")
     print(f"Part 2: {sum(map(overlap, assignments))}")
-
