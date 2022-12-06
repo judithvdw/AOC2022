@@ -1,11 +1,10 @@
 from collections import defaultdict
-import re
 
 
 def parse_start_state(start):
     d = defaultdict(list)
     for row in start.split("\n")[::-1]:
-        row = row[1::4] # Every 4th character is the crate (or the space above the crates)
+        row = row[1::4]  # Every 4th character is the crate (or the space above the crates)
         for i, value in enumerate(row):
             if value != " ":
                 d[i + 1].append(value)  # +1 so the key matches the instructions
