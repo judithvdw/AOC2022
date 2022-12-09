@@ -22,6 +22,7 @@ def next_tail_pos(t, h):
     else:
         return t
 
+
 def run_tail(path_head, knots):
     path_tail = [(0, 0)]
     for _ in range(knots - 1):
@@ -33,6 +34,7 @@ def run_tail(path_head, knots):
         path_tail = [(0, 0)]
 
     return len(set(path_head))
+
 
 with open("inputs/9.txt") as f:
     steps = [x.strip().split() for x in f.readlines()]
