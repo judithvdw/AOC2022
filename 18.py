@@ -9,12 +9,12 @@ def get_visible_sides(cubes):
 
 
 with open("inputs/18.txt") as f:
-    cubes = set([tuple(map(int, a.split(","))) for a in f.readlines()])
+    lava = set([tuple(map(int, a.split(","))) for a in f.readlines()])
 
 
 total_grid = set([(x,y,z) for x in range(0,22) for y in range(0,22) for z in range(0,22)])
 
-all_air = total_grid - cubes
+all_air = total_grid - lava
 start = (0,0,0)
 outside_air = {start}
 queue = [start]
@@ -24,13 +24,13 @@ while queue:
     x,y,z = point
     if point not in all_air:
         continue
-    new_outside_air = {(x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z), (x, y, z + 1), (x, y, z - 1)} - outside_air - cubes
+    new_outside_air = {(x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z), (x, y, z + 1), (x, y, z - 1)} - outside_air - lava
     outside_air.update(new_outside_air)
     queue.extend(new_outside_air)
 
 inside = all_air - outside_air
 
-print(f"Part 1: {get_visible_sides(cubes)}")
-print(f"Part 2: {get_visible_sides(inside | cubes)}")
+print(f"Part 1: {get_visible_sides(lava)}")
+print(f"Part 2: {get_visible_sides(inside | lava)}")
 
 
