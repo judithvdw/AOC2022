@@ -1,18 +1,34 @@
 import re
-from math import dist
 from scipy.spatial.distance import cityblock
 from tqdm import tqdm
-
-def manhattan(pair):
-    return cityblock(*pair)
+from collections import Counter
 
 
-def get_offsets_at_same_distance(cord, dist):
-    cords = set()
-    v,w = cord
-    for x,y in zip(range(dist+1), range(dist+1)[::-1]):
-            cords.update([(v+x,w+y)], [(v+-x,w+-y)], [(v+-x, w+y)], [(v+x,w+-y)])
-    return(cords)
+def part_1(questioned_y):
+    not_beacons = set()
+    for pair in list(zip(sensors, beacons)):
+        sensor, beacon = pair
+        x, y = sensor
+        dist = cityblock(*pair)
+        if abs(y - questioned_y) < dist:
+            remainder_for_x = dist - abs(y - questioned_y)
+            not_beacons.update(range(x - remainder_for_x, x + remainder_for_x + 1))
+    return len(not_beacons) - 1
+
+
+def part_2(questioned_y):
+    for pair in list(zip(sensors, beacons)):
+        sensor, beacon = pair
+        x, y = sensor
+        dist = cityblock(*pair)
+        if abs(y - questioned_y) < dist:
+            remainder_for_x = dist - abs(y - questioned_y)
+            low = x - remainder_for_x - 1
+            high = x + remainder_for_x + 1
+            if low >= 0:
+                yield low, questioned_y
+            if high <= 4000000:
+                yield high, questioned_y
 
 
 with open('inputs/15.txt') as f:
@@ -20,26 +36,14 @@ with open('inputs/15.txt') as f:
     sensors = [tuple(map(int, cord[:2])) for cord in cords]
     beacons = [tuple(map(int, cord[2:])) for cord in cords]
 
-    not_beacons = set()
-    Y = 2_000_000
-    for pair in tqdm(list(zip(sensors, beacons))):
-        sensor, beacon = pair
-        dist = manhattan(pair)
-        edges = get_offsets_at_same_distance(sensor, dist)
-        edges = list(set(filter(lambda x:x[1]==Y, edges)))
-        if not edges:
-            continue
-        elif len(edges) == 1:
-            not_beacons.update([edges[0][0]])
-        else:
-            assert len(edges) == 2
-            small = min(edges[0][0],edges[1][0])
-            big = max(edges[0][0],edges[1][0])
-            not_beacons.update(range(small, big + 1))
+    print(f"part 1 : {part_1(2000000)}")
 
-    print(len(not_beacons) -1)
-
-
-
-
-
+    # Probably shouldn't loop over all the rows, but it runs in less then 10 minutes
+    for y in tqdm(range(0, 4000000 + 1)):
+        options = part_2(y)
+        c = Counter(list(options))
+        if 4 in c.values():
+            a = {v: k for k, v in c.items()}
+            x, y = a[4]
+            print(f"Part 2: {x * 4000000 + y}")
+            break
